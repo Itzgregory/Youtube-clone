@@ -1,12 +1,17 @@
-import { Box, Flex, Title } from "@mantine/core"
-import { VideoTeaser } from "../../components"
-import { subscription } from "../../interface"
-import { useSubscription } from '../../context'
-
+import { Box, Flex, Title } from "@mantine/core";
+import { VideoTeaser } from "../../components";
+import { subscription } from "../../interface";
+import { useSubscription } from '../../context';
 
 const Mysubs = () => {
-    const { subscription, refetch } = useSubscription()
-    refetch()
+    const { subscription, refetch } = useSubscription();
+    
+    // Log subscription to check its structure
+    console.log(subscription);
+    
+    // Refetch data (handle side-effects properly)
+    refetch();
+
     return (
         <>
             <Title mb='xl' align="center">Your Video Subscriptions</Title>
@@ -17,15 +22,20 @@ const Mysubs = () => {
                     justify="flex-start"
                     align="center"
                     direction="row"
-                    wrap="wrap"> {
-                        (subscription || []).map((subscription: subscription) => {
-                            return <VideoTeaser key={subscription.videoTo.videoId} video={subscription.videoTo} />
-                        })
-                    }</Flex>
+                    wrap="wrap">
+                    {(subscription || []).map((subscriptionItem: subscription) => {
+                        // Log each subscription item to inspect videoTo
+                        console.log(subscriptionItem);
+                        if (subscriptionItem && subscriptionItem.videoTo) {
+                            return <VideoTeaser key={subscriptionItem.videoTo.videoId} video={subscriptionItem.videoTo} />;
+                        } else {
+                            return null; // Handle missing videoTo gracefully
+                        }
+                    })}
+                </Flex>
             </Box>
         </>
-    )
-}
+    );
+};
 
-
-export default Mysubs
+export default Mysubs;

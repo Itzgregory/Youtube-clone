@@ -1,35 +1,48 @@
-import { getVideos } from '../api';
+import { useEffect } from 'react';
+import { Box, Flex, Title, Loader } from '@mantine/core';
 import { VideoTeaser } from '../components';
+import { videosApi } from '../api/config';
 import { video } from '../interface';
-import { Box, Flex, Title } from '@mantine/core';
+import { useQuery } from 'react-query';
 
-const Home = ({ videos }: { videos: Array<video> }) => {
+const Home = () => {
+  const { data: videos, isLoading, error } = useQuery<video[]>('videos', videosApi.getAll);
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" style={{ minHeight: '50vh' }}>
+        <Loader size="xl" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box p="xl" style={{ textAlign: 'center' }}>
+        <Title order={2} color="red">Error loading videos</Title>
+      </Box>
+    );
+  }
+
   return (
     <>
-      <Title align='center'>Wellcome to LegendaryTube</Title>
+      <Title align='center'>Welcome to LegendaryTube</Title>
       <Box p='xs'>
         <Flex
-        mt={50}
+          mt={50}
           gap="xs"
           justify="flex-start"
           align="center"
           direction="row"
-          wrap="wrap"> {
-            (videos || []).map((video: video) => {
-              return <VideoTeaser key={video.videoId} video={video} />
-            })
-          }</Flex>
+          wrap="wrap"
+        >
+          {(videos || []).map((video: video) => (
+            <VideoTeaser key={video.videoId} video={video} />
+          ))}
+        </Flex>
       </Box>
     </>
-  )
-}
+  );
+};
 
-export const getServerSideProps = async () => {
-  const videos = await getVideos()
-  return {
-    props: {
-      videos: videos
-    }
-  }
-}
-export default Home
+export default Home;

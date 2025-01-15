@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { User, video } from '../../interface'
+import { User, video } from '../../interface/index'
 
 const base = process.env.NEXT_PUBLIC_API_ENDPOINT
 
