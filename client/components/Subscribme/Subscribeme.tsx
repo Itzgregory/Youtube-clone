@@ -7,8 +7,8 @@ import { setSubscription } from '../../api';
 import { useSubscription } from '../../context';
 import { User, video } from '../../interface';
 
-const Subscribeme = ({ user, data, videoId }: { data: video | undefined, user: User, videoId: string | string[] | undefined }) => {
-  const { subscription, refetch } = useSubscription();
+const Subscribme = ({ user, data, videoId }: { data: video | undefined, user: User | null, videoId: string | string[] | undefined }) => {
+  const { subscription = [], refetch } = useSubscription(); 
   const videoSubscribed = subscription.some((subscription) => subscription.videoTo?.videoId === videoId);
   const [subState, setsubState] = useState(videoSubscribed);
 
@@ -20,30 +20,30 @@ const Subscribeme = ({ user, data, videoId }: { data: video | undefined, user: U
 
   return (
     <>
-      {
-        user ? (
-          subState
-            ? <Button ml='xl' radius="xl" leftIcon={<BellRinging size={14} />} size="xs" variant="light" color="dark" onClick={() => (subscribme.mutate({ data, user }), setsubState(!subState))}>
-              Subscribed
-            </Button>
-            :
-            <Button ml='xl' radius="xl" size="xs" onClick={() => (subscribme.mutate({ data, user }), setsubState(!subState))}>
+      {user ? (
+        subState ? (
+          <Button ml="xl" radius="xl" leftIcon={<BellRinging size={14} />} size="xs" variant="light" color="dark" onClick={() => (subscribme.mutate({ data, user }), setsubState(!subState))}>
+            Subscribed
+          </Button>
+        ) : (
+          <Button ml="xl" radius="xl" size="xs" onClick={() => (subscribme.mutate({ data, user }), setsubState(!subState))}>
+            Subscribe me
+          </Button>
+        )
+      ) : (
+        <Popover width={200} position="bottom" withArrow shadow="md">
+          <Popover.Target>
+            <Button ml="xl" radius="xl" size="xs">
               Subscribe me
-            </Button>)
-          :
-          <Popover width={200} position="bottom" withArrow shadow="md">
-            <Popover.Target>
-              <Button ml='xl' radius="xl" size="xs">
-                Subscribe me
-              </Button>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="sm">You must be logged in to subscribe</Text>
-            </Popover.Dropdown>
-          </Popover>
-      }
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Text size="sm">You must be logged in to subscribe</Text>
+          </Popover.Dropdown>
+        </Popover>
+      )}
     </>
   );
 };
 
-export default Subscribeme;
+export default Subscribme;

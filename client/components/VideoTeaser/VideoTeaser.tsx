@@ -4,9 +4,16 @@ import { useState } from 'react';
 import { video } from '../../interface';
 import Moment from 'react-moment';
 import { updateVideoViews } from '../../api';
+import { useSubscription } from '../../context/subscription/subscriptions';
+import { UserLoged } from '../../context/user/user';
 
 export const VideoTeaser = ({ video }: { video: video }) => {
   const [thumbnail, setThumbnail] = useState('');
+  const { user } = UserLoged();  // Fetch logged-in user from context
+  const { subscription } = useSubscription();  // Fetch subscriptions from context
+
+  // Check if video is in user's subscription list
+  const isSubscribed = subscription?.some(sub => sub.videoTo.videoId === video.videoId);
 
   return (
     <Link href={`/watch/${video.videoId}`} passHref>
