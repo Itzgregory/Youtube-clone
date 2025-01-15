@@ -9,10 +9,9 @@ import { UserLoged } from '../../context/user/user';
 
 export const VideoTeaser = ({ video }: { video: video }) => {
   const [thumbnail, setThumbnail] = useState('');
-  const { user } = UserLoged();  // Fetch logged-in user from context
-  const { subscription } = useSubscription();  // Fetch subscriptions from context
+  const { user } = UserLoged(); 
+  const { subscription } = useSubscription(); 
 
-  // Check if video is in user's subscription list
   const isSubscribed = subscription?.some(sub => sub.videoTo.videoId === video.videoId);
 
   return (

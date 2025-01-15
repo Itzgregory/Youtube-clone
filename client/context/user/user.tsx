@@ -32,8 +32,9 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
 
 export const UserLoged = () => {
     const context = useContext(UserContext);
-    if (!context) {
-        throw new Error("The UserContext must be used within a UserContextProvider");
+    if (!context || context.user === null) {
+      return { user: null, refetch: () => {} }; 
     }
     return context;
-};
+  };
+  

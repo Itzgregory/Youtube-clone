@@ -9,13 +9,27 @@ import { QueryKeys } from "../../types";
 
 const Myvideos = () => {
     const { user } = UserLoged();
-    
-    const { data, refetch } = useQuery<video[], AxiosError>({
-        queryKey: [QueryKeys.videos, user._id],
-        queryFn: () => getVideosByUser(user._id),
+
+    if (!user) {
+        return <Box>User is not logged in</Box>;
+    }
+
+    const { data, refetch, isLoading, error } = useQuery<video[], AxiosError>({
+        queryKey: [QueryKeys.videos, user?._id],
+        queryFn: () => getVideosByUser(user?._id),
     });
 
-    console.log(data);
+    if (isLoading) {
+        return <Box>Loading your videos...</Box>;
+    }
+
+    if (error) {
+        return <Box>Error: {error.message}</Box>;
+    }
+
+    if (!data?.length) {
+        return <Box>No videos found</Box>;
+    }
 
     return (
         <Box p='xs'>
@@ -39,13 +53,11 @@ const Myvideos = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(data || []).map((video: video) => {
-                            console.log(video);
+                        {(Array.isArray(data) ? data : []).map((video) => {
                             if (video) {
                                 return <MyVideosTeaser key={video._id} video={video} refetch={refetch} />;
-                            } else {
-                                return null; 
                             }
+                            return null;
                         })}
                     </tbody>
                 </Table>
