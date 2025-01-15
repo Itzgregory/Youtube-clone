@@ -6,10 +6,8 @@ import { useSubscription } from '../../context';
 const Mysubs = () => {
     const { subscription, refetch } = useSubscription();
     
-    // Log subscription to check its structure
     console.log(subscription);
     
-    // Refetch data (handle side-effects properly)
     refetch();
 
     return (
@@ -24,12 +22,11 @@ const Mysubs = () => {
                     direction="row"
                     wrap="wrap">
                     {(subscription || []).map((subscriptionItem: subscription) => {
-                        // Log each subscription item to inspect videoTo
                         console.log(subscriptionItem);
                         if (subscriptionItem && subscriptionItem.videoTo) {
                             return <VideoTeaser key={subscriptionItem.videoTo.videoId} video={subscriptionItem.videoTo} />;
                         } else {
-                            return null; // Handle missing videoTo gracefully
+                            return null;
                         }
                     })}
                 </Flex>

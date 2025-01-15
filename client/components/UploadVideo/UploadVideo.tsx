@@ -28,10 +28,46 @@ const EditVideoForm = ({ videoId, setOpened, setProgress }: { videoId: string, s
       setOpened(false);
       router.replace(router.asPath);
     },
+    onError: (error: AxiosError) => {
+      console.error("Error updating video:", error.message);
+      alert("There was an error updating the video. Please try again.");
+    },
   });
 
+  const handleSubmit = (values: any) => {
+    const { title, description, published, thumbnail } = values;
+    mutation.mutate({
+      videoId,
+      title,
+      description,
+      published,
+      thumbnailPath: thumbnail, 
+      _id: "", 
+      videoPath: "", 
+      extension: "", 
+      comments: [], 
+      createdAt: "", 
+      updatedAt: "", 
+      previewPath: "", 
+      videoLength: "", 
+      user: { 
+        _id: "", 
+        name: "", 
+        surname: "",   
+        __v: 0,       
+        email: "", 
+        photo: "",     
+        displayName: "" 
+      },
+      views: 0, 
+      subscribers: [],
+      datePublished: "",
+      likeId: [],
+    });
+  };
+
   return (
-    <form onSubmit={form.onSubmit((values) => mutation.mutate({ videoId, ...values }))}>
+    <form onSubmit={form.onSubmit(handleSubmit)}>
       <Stack>
         <TextInput
           label="Title"
@@ -67,7 +103,12 @@ export const UploadVideo = () => {
   const [opened, setOpened] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const mutation = useMutation(uploadVideo);
+  const mutation = useMutation(uploadVideo, {
+    onError: (error: AxiosError) => {
+      console.error("Error uploading video:", error.message);
+      alert("There was an error uploading the video. Please try again.");
+    },
+  });
 
   const config = {
     onUploadProgress: (progressEvent: ProgressEvent) => {
@@ -130,7 +171,7 @@ export const UploadVideo = () => {
           />
         )}
 
-        {mutation.data && progress == 100 && (
+        {mutation.data && progress === 100 && (
           <EditVideoForm
             setOpened={setOpened}
             videoId={mutation.data.videoId}

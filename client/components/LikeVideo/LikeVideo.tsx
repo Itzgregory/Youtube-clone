@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { ThumbUp } from 'tabler-icons-react';
-import { updateLikeIdVideo } from '../../api/index';
+import { updateLikeIdVideo } from '../../api/videos/videos';
 import { User, video } from '../../interface';
 
 const LikeVideo = ({ user, data, refetch, videoId }: { user: User, data: video | undefined, refetch: Function, videoId: string | string[] | undefined }) => {
@@ -18,7 +18,7 @@ const LikeVideo = ({ user, data, refetch, videoId }: { user: User, data: video |
   useEffect(() => {
     setLikeQty(data?.likeId.length);
     setLike(data?.likeId.includes(user._id));
-  }, [data, user._id]); // Add user._id to the dependencies array
+  }, [data, user._id]); 
 
   return (
     <>

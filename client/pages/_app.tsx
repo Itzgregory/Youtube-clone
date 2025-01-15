@@ -1,11 +1,16 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { MantineProvider } from '@mantine/core'
-import Head from 'next/head'
-import { NotificationsProvider } from '@mantine/notifications'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { UserContextProvider, SubscriptionContextProvider } from '../context'
-import Layout from '../Layout/Layout'
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+import { MantineProvider } from '@mantine/core';
+import Head from 'next/head';
+import { NotificationsProvider } from '@mantine/notifications';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { UserContextProvider, SubscriptionContextProvider } from '../context';
+import Layout from '../Layout/Layout';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+});
 
 const queryClient = new QueryClient();
 
@@ -14,13 +19,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>Legends Clone (My Youtube Clone)</title>
-        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width= device-width"></meta>
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
         theme={{
-          colorScheme: 'light'
+          colorScheme: 'light',
         }}
       >
         <NotificationsProvider>
@@ -28,7 +33,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <UserContextProvider>
               <Layout>
                 <SubscriptionContextProvider>
-                  <Component {...pageProps} />
+                  <div className={inter.className}>
+                    <Component {...pageProps} />
+                  </div>
                 </SubscriptionContextProvider>
               </Layout>
             </UserContextProvider>
@@ -36,6 +43,5 @@ export default function App({ Component, pageProps }: AppProps) {
         </NotificationsProvider>
       </MantineProvider>
     </>
-  )
+  );
 }
-

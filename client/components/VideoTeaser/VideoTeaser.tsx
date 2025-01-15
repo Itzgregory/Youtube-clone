@@ -14,8 +14,8 @@ export const VideoTeaser = ({ video }: { video: video }) => {
         direction="column"
         sx={() => ({
           '&:hover': {
-            transform: 'scale(1.03)', // Ensure animates properly
-            transition: 'transform 0.3s ease-in-out', // Add smooth transition
+            transform: 'scale(1.03)', 
+            transition: 'transform 0.3s ease-in-out', 
           },
         })}
         onClick={() => updateVideoViews(video.videoId)}

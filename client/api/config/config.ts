@@ -11,3 +11,9 @@ export const apiClient = axios.create({
   },
 });
 
+export const videosApi = {
+  getAll: async () => {
+    const res = await apiClient.get(videoBase);
+    return res.data;
+  },
+};

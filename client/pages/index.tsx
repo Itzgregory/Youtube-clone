@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Box, Flex, Title, Loader } from '@mantine/core';
 import { VideoTeaser } from '../components';
-import { videosApi } from '../api/config';
+import { videosApi } from '../api/config/config';
 import { video } from '../interface';
 import { useQuery } from 'react-query';
 

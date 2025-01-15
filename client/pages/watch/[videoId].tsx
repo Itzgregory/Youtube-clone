@@ -4,7 +4,7 @@ import Moment from 'react-moment';
 import { UserLoged } from '../../context';
 import { useQuery } from "react-query";
 import { AxiosError } from "axios";
-import { getVideoPropertys } from "../../api";
+import { getVideoProperties } from "../../api/videos/videos";
 import { QueryKeys } from "../../types";
 import { video } from "../../interface";
 import Comments from "../../components/Comments/comments";
@@ -15,7 +15,7 @@ const WatchVideoPage = () => {
     const { query: { videoId } } = useRouter();
     const { data, refetch } = useQuery<video, AxiosError>({
         queryKey: [QueryKeys.videos, videoId],
-        queryFn: async () => await getVideoPropertys(videoId),
+        queryFn: async () => await getVideoProperties(videoId),
     });
     const { user } = UserLoged();
 
