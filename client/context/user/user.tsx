@@ -5,36 +5,41 @@ import { getUserLoged } from '../../api/user/user';
 import { User } from '../../interface/user/user';
 import { QueryKeys } from '../../types/index';
 
-const UserContext = createContext<{
-    user: User | null;
-    refetch: <TPageData>(options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined) => any;
-} | null>(null);
+interface UserContextType {
+  user: User | null;
+  refetch: <TPageData>(options?: RefetchOptions & RefetchQueryFilters<TPageData>) => Promise<any>;
+}
+
+const UserContext = createContext<UserContextType>({
+  user: null,
+  refetch: async () => undefined
+});
 
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
-    const { data, isLoading, error, refetch } = useQuery<User, Error>(QueryKeys.user, getUserLoged);
+  const { data, isLoading, error, refetch } = useQuery<User, Error>(
+    QueryKeys.user, 
+    getUserLoged
+  );
 
-    const user = data ?? null;
+  if (isLoading) {
+    return <Loader />;
+  }
 
-    if (isLoading) {
-        return <Loader />;
-    }
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
-    if (error) {
-        return <Text>Error: {error.message}</Text>;
-    }
-
-    return (
-        <UserContext.Provider value={{ user, refetch }}>
-            {children}
-        </UserContext.Provider>
-    );
+  return (
+    <UserContext.Provider value={{ user: data ?? null, refetch }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const UserLoged = () => {
-    const context = useContext(UserContext);
-    if (!context || context.user === null) {
-      return { user: null, refetch: () => {} }; 
-    }
-    return context;
-  };
-  
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('UserLoged must be used within a UserContextProvider');
+  }
+  return context;
+};

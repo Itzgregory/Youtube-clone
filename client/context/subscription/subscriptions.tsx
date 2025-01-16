@@ -6,31 +6,39 @@ import { subscription } from '../../interface';
 import { QueryKeys } from '../../types';
 import { UserLoged } from '../user/user';
 
-const SubscriptionContext = createContext<{
-    subscription: subscription[] | undefined;
-    refetch: <TPageData>(
-        options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-    ) => any;
-    // @ts-ignore
-}>(null);
+interface SubscriptionContextType {
+  subscription: subscription[] | undefined;
+  refetch: <TPageData>(options?: RefetchOptions & RefetchQueryFilters<TPageData>) => Promise<any>;
+}
+
+const SubscriptionContext = createContext<SubscriptionContextType>({
+  subscription: undefined,
+  refetch: async () => undefined
+});
 
 export const SubscriptionContextProvider = ({ children }: { children: ReactNode }) => {
-    const { user } = UserLoged();
+  const { user } = UserLoged();
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: [QueryKeys.subscription, user?._id],
+    queryFn: () => (user?._id ? getSubscription({ userTo: user._id }) : undefined),
+    enabled: !!user?._id,
+  });
 
-    if (!user) {
-        return <>{children}</>; 
-    }
+  if (isLoading) {
+    return <Loader />;
+  }
 
-    const { data, refetch, isLoading } = useQuery({
-        queryKey: [QueryKeys.subscription, user._id],
-        queryFn: () => getSubscription({ userTo: user._id }),
-    });
-
-    return (
-        <SubscriptionContext.Provider value={{ subscription: data, refetch }}>
-            {isLoading ? <Loader /> : children}
-        </SubscriptionContext.Provider>
-    );
+  return (
+    <SubscriptionContext.Provider value={{ subscription: data, refetch }}>
+      {children}
+    </SubscriptionContext.Provider>
+  );
 };
 
-export const useSubscription = () => useContext(SubscriptionContext);
+export const useSubscription = () => {
+  const context = useContext(SubscriptionContext);
+  if (!context) {
+    throw new Error('useSubscription must be used within a SubscriptionContextProvider');
+  }
+  return context;
+};

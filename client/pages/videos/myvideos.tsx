@@ -9,22 +9,28 @@ import { QueryKeys } from "../../types";
 
 const Myvideos = () => {
     const { user } = UserLoged();
+    
+    const { data, refetch, isLoading, error } = useQuery<video[], AxiosError>({
+        queryKey: [QueryKeys.videos, user?._id],
+        queryFn: () => {
+            if (!user?._id) {
+                return Promise.reject('No user ID available');
+            }
+            return getVideosByUser(user._id);
+        },
+        enabled: !!user?._id, 
+    });
 
     if (!user) {
         return <Box>User is not logged in</Box>;
     }
-
-    const { data, refetch, isLoading, error } = useQuery<video[], AxiosError>({
-        queryKey: [QueryKeys.videos, user?._id],
-        queryFn: () => getVideosByUser(user?._id),
-    });
 
     if (isLoading) {
         return <Box>Loading your videos...</Box>;
     }
 
     if (error) {
-        return <Box>Error: {error.message}</Box>;
+        return <Box>Error: {error instanceof Error ? error.message : 'Unknown error'}</Box>;
     }
 
     if (!data?.length) {
@@ -53,12 +59,13 @@ const Myvideos = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {(Array.isArray(data) ? data : []).map((video) => {
-                            if (video) {
-                                return <MyVideosTeaser key={video._id} video={video} refetch={refetch} />;
-                            }
-                            return null;
-                        })}
+                        {data.map((video) => (
+                            <MyVideosTeaser 
+                                key={video._id} 
+                                video={video} 
+                                refetch={refetch} 
+                            />
+                        ))}
                     </tbody>
                 </Table>
             </Flex>

@@ -30,15 +30,15 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <NotificationsProvider>
           <QueryClientProvider client={queryClient}>
-            <UserContextProvider>
-              <Layout>
-                <SubscriptionContextProvider>
-                  <div className={inter.className}>
-                    <Component {...pageProps} />
-                  </div>
-                </SubscriptionContextProvider>
-              </Layout>
-            </UserContextProvider>
+          <UserContextProvider>
+            <Layout>
+              <SubscriptionContextProvider>
+                <div className={inter.className}>
+                  <Component {...pageProps} />
+                </div>
+              </SubscriptionContextProvider>
+            </Layout>
+          </UserContextProvider>
           </QueryClientProvider>
         </NotificationsProvider>
       </MantineProvider>
