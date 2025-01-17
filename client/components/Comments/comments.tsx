@@ -8,14 +8,19 @@ import { comment } from "../../interface/index";
 import Moment from "react-moment";
 import { QueryKeys } from "../../types/index";
 
+interface FormValues {
+  content: string;
+}
+
 const Comments = ({ postId }: { postId: string }) => {
   const { user } = UserLoged();
-  const form = useForm({
+  
+  const form = useForm<FormValues>({
     initialValues: {
       content: "",
-      writer: user,
     },
   });
+
   const { data, refetch } = useQuery({
     queryKey: [QueryKeys.comments, postId],
     queryFn: () => getComment(postId),
@@ -28,14 +33,28 @@ const Comments = ({ postId }: { postId: string }) => {
     },
   });
 
+  const handleSubmit = (values: FormValues) => {
+    if (!user) return;
+    
+    mutation.mutate({
+      postId,
+      content: values.content,
+      writer: user
+    });
+  };
+
   return (
     <Box mt="md">
       {user ? (
         <Flex align="center">
           <Avatar src={user.photo} mr="md" color="cyan" radius="xl" />
-          <form onSubmit={form.onSubmit((values) => mutation.mutate({ postId, ...values }))}>
+          <form onSubmit={form.onSubmit(handleSubmit)}>
             <Flex>
-              <TextInput style={{ width: "40vw" }} placeholder="Input your comment here" {...form.getInputProps("content")} />
+              <TextInput 
+                style={{ width: "40vw" }} 
+                placeholder="Input your comment here" 
+                {...form.getInputProps("content")} 
+              />
               <Button ml="xl" type="submit">
                 Send
               </Button>

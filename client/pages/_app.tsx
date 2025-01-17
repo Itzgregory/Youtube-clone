@@ -6,11 +6,6 @@ import { NotificationsProvider } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { UserContextProvider, SubscriptionContextProvider } from '../context';
 import Layout from '../Layout/Layout';
-import { Inter } from 'next/font/google';
-
-const inter = Inter({
-  subsets: ['latin'],
-});
 
 const queryClient = new QueryClient();
 
@@ -20,6 +15,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Legends Clone (My Youtube Clone)</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet" />
       </Head>
       <MantineProvider
         withGlobalStyles
@@ -30,15 +28,15 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <NotificationsProvider>
           <QueryClientProvider client={queryClient}>
-          <UserContextProvider>
-            <Layout>
-              <SubscriptionContextProvider>
-                <div className={inter.className}>
-                  <Component {...pageProps} />
-                </div>
-              </SubscriptionContextProvider>
-            </Layout>
-          </UserContextProvider>
+            <UserContextProvider>
+              <Layout>
+                <SubscriptionContextProvider>
+                  <div style={{ fontFamily: 'Inter, sans-serif' }}>
+                    <Component {...pageProps} />
+                  </div>
+                </SubscriptionContextProvider>
+              </Layout>
+            </UserContextProvider>
           </QueryClientProvider>
         </NotificationsProvider>
       </MantineProvider>

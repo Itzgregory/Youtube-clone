@@ -87,9 +87,8 @@ const EditVideoForm = ({ videoId, setOpened, setProgress }: { videoId: string, s
         />
         <FileInput
           accept="image/png,image/jpeg, image/bmp, image/jpg, image/tiff"
-          placeholder="Pick file"
           label="Thumbnail"
-          description="video thumbnail (optional)"
+          description="Video thumbnail (optional)"
           radius="md"
           {...form.getInputProps("thumbnail")}
         />
